@@ -5,14 +5,8 @@ using UnityEngine;
 public class BodyPart : MonoBehaviour
 {
 
-    public enum IndividualBodyPart
-    {
-        HEAD,
-        SHIRT,
-        ARMS,
-        LEGS,
-        SHOES
-    }
+    [SerializeField]
+    public Manager.IndividualBodyPart thisBodyPart;
 
     // Start is called before the first frame update
     void Start()
@@ -24,5 +18,24 @@ public class BodyPart : MonoBehaviour
     void Update()
     {
         
+    }
+
+    void OnDrop()
+    {
+        switch(thisBodyPart)
+        {
+            case Manager.IndividualBodyPart.HEAD:
+                break;
+            case Manager.IndividualBodyPart.SHIRT:
+                break;
+            case Manager.IndividualBodyPart.ARMS:
+                break;
+            case Manager.IndividualBodyPart.LEGS:
+                break;
+            case Manager.IndividualBodyPart.SHOES:
+                break;
+            default:
+                break;
+        }
     }
 }

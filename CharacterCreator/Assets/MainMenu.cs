@@ -17,6 +17,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     private GameObject[] bodyPartCollection;
 
+    [SerializeField]
     private MenuPages currentMenuPage = 0;
 
     // Start is called before the first frame update
