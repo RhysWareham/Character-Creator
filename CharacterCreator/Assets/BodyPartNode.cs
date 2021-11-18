@@ -14,6 +14,7 @@ public class BodyPartNode : SkeletonScript
         if(this.GetComponentInChildren<Image>().sprite == null)
         {
             NodeCurrentSprite[(int)thisBodyPartAllowed] = false;
+            Debug.Log("northinf");
         }
         else
         {
