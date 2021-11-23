@@ -10,9 +10,11 @@ public static class Manager
         SHIRT,
         ARMS,
         LEGS,
-        SHOES
+        TROUSERS,
+        SHOES,
+
     }
 
-
+    //Should i make a separate array for clothing?
 
 }
