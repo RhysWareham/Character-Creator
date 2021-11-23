@@ -43,16 +43,12 @@ public class BodyPartSlot : SkeletonScript, IDropHandler
             //If the body part is the same as the bodypart allowed
             if(eventData.pointerDrag.GetComponent<BodyPart>().thisBodyPart == thisBodyPartAllowed)
             {
+                eventData.pointerDrag.GetComponent<BodyPart>().droppedOnSlot = true;
                 //Snap sprite to slot centre position
                 eventData.pointerDrag.GetComponent<RectTransform>().position = GetComponent<RectTransform>().position;
 
             }
-            //If not the correct body part...
-            else
-            {
-                //Put back to original position
-                //eventData.pointerDrag.GetComponent<BodyPart>().ResetPosition();
-            }
+            
         }
     }
 }

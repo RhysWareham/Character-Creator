@@ -12,7 +12,8 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     private Canvas canvas;
     private CanvasGroup canvasGroup;
     public RectTransform rectTransform;
-    //public RectTransform startPos;
+    public Vector3 startPos;
+    public bool droppedOnSlot;
 
     // Start is called before the first frame update
     void Start()
@@ -20,7 +21,7 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         canvas = FindObjectOfType<Canvas>();
         canvasGroup = GetComponent<CanvasGroup>();
         rectTransform = GetComponent<RectTransform>();
-        //startPos.position = rectTransform.position;
+        startPos = transform.position;
     }
 
     // Update is called once per frame
@@ -53,8 +54,11 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     {
         canvasGroup.alpha = 0.6f;
         canvasGroup.blocksRaycasts = false;
+
+        eventData.pointerDrag.GetComponent<BodyPart>().droppedOnSlot = false;
         Debug.Log("OnBeginDrag");
     }
+
     public void OnDrag(PointerEventData eventData)
     {
         Debug.Log("OnDrag");
@@ -67,6 +71,13 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         Debug.Log("OnEndDrag");
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
+
+        //If not dropped on slot
+        if(droppedOnSlot == false)
+        {
+            //Set position back to start position
+            transform.position = startPos;
+        }
     }
     public void OnPointerDown(PointerEventData eventData)
     {
