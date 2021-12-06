@@ -34,7 +34,7 @@ public class BodyPartSlot : SkeletonScript, IDropHandler
     /// Function called on mouse drop
     /// </summary>
     /// <param name="eventData"></param>
-    public void OnDrop(PointerEventData eventData)
+    public virtual void OnDrop(PointerEventData eventData)
     {
         Debug.Log("OnDropSlot");
         //If not null
@@ -48,7 +48,19 @@ public class BodyPartSlot : SkeletonScript, IDropHandler
                 eventData.pointerDrag.GetComponent<RectTransform>().position = GetComponent<RectTransform>().position;
 
             }
+            //else if(thisBodyPartAllowed == Manager.IndividualBodyPart.TROUSERS && eventData.pointerDrag.GetComponent<BodyPart>().thisBodyPart == Manager.IndividualBodyPart.LEGS)
+            //{
+            //    eventData.pointerDrag.GetComponent<BodyPart>().droppedOnSlot = true;
+            //    //Snap sprite to slot centre position
+            //    eventData.pointerDrag.GetComponent<RectTransform>().position = GetComponent<RectTransform>().localPosition;
+            //       // new Vector3(0, GetComponent<RectTransform>().localPosition.y, GetComponent<RectTransform>().position.z);
+            //}
             
         }
+
+
+        //Need to unparent them from the menus so they dont disappear when clicking on a separate body part tab
+
+
     }
 }

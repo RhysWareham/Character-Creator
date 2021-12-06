@@ -15,6 +15,11 @@ public static class Manager
 
     }
 
+    public enum IndividualFacePart
+    {
+        EYES
+    }
+
     //Should i make a separate array for clothing?
 
 }

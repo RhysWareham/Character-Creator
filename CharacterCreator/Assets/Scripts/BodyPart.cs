@@ -14,6 +14,7 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     public RectTransform rectTransform;
     public Vector3 startPos;
     public bool droppedOnSlot;
+    public bool isFacePart;
 
     // Start is called before the first frame update
     void Start()
