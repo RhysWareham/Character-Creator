@@ -8,19 +8,16 @@ public class BodyPartSlot : SkeletonScript, IDropHandler
 {
 
     public Manager.IndividualBodyPart thisBodyPartAllowed;
-
+    public GameObject defaultBodyPart;
 
     // Start is called before the first frame update
     void Start()
     {
+        //If no sprite
         if(this.GetComponentInChildren<Image>().sprite == null)
         {
-            NodeCurrentSprite[(int)thisBodyPartAllowed] = false;
-            Debug.Log("northinf");
-        }
-        else
-        {
-            NodeCurrentSprite[(int)thisBodyPartAllowed] = true;
+            //Set Current Node Sprite default
+            NodeCurrentSprite[(int)thisBodyPartAllowed] = defaultBodyPart;
         }
     }
 
@@ -43,10 +40,11 @@ public class BodyPartSlot : SkeletonScript, IDropHandler
             //If the body part is the same as the bodypart allowed
             if(eventData.pointerDrag.GetComponent<BodyPart>().thisBodyPart == thisBodyPartAllowed)
             {
-                eventData.pointerDrag.GetComponent<BodyPart>().droppedOnSlot = true;
-                //Snap sprite to slot centre position
-                eventData.pointerDrag.GetComponent<RectTransform>().position = GetComponent<RectTransform>().position;
+                
 
+                eventData.pointerDrag.GetComponent<BodyPart>().AttachToSkeleton(this);
+                //Set this node's sprite
+                NodeCurrentSprite[(int)thisBodyPartAllowed] = eventData.pointerDrag.gameObject;
             }
             //else if(thisBodyPartAllowed == Manager.IndividualBodyPart.TROUSERS && eventData.pointerDrag.GetComponent<BodyPart>().thisBodyPart == Manager.IndividualBodyPart.LEGS)
             //{

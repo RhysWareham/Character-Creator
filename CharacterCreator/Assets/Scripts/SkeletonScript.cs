@@ -5,7 +5,7 @@ using UnityEngine;
 public class SkeletonScript : MonoBehaviour
 {
     //Array to keep track of what sprites are in what slot
-    public bool[] NodeCurrentSprite = new bool[System.Enum.GetValues(typeof(Manager.IndividualBodyPart)).Length];
+    public GameObject[] NodeCurrentSprite = new GameObject[System.Enum.GetValues(typeof(Manager.IndividualBodyPart)).Length];
 
     // Start is called before the first frame update
     void Start()

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public static class Manager
 {
+    public static Color currentColor;
+
     public enum IndividualBodyPart
     {
         HEAD,
