@@ -4,21 +4,55 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class BodyPartSlot : SkeletonScript, IDropHandler
+public class BodyPartSlot : MonoBehaviour, IDropHandler
 {
 
     public Manager.IndividualBodyPart thisBodyPartAllowed;
-    public GameObject defaultBodyPart;
+    [SerializeField]
+    private GameObject defaultBodyPartHolder;
+    private GameObject thisDefaultHolder;
+    public bool isDefaultOn;
+    public int slotNumber;
+    public SkeletonScript skeleton;
 
     // Start is called before the first frame update
     void Start()
     {
-        //If no sprite
-        if(this.GetComponentInChildren<Image>().sprite == null)
+        //Get skeleton
+        skeleton = GetComponentInParent<SkeletonScript>();
+
+        //Go through skeleton node array to find what number is this one
+        for(int i = 0; i < skeleton.SkeletonNodes.Length; i++)
         {
-            //Set Current Node Sprite default
-            NodeCurrentSprite[(int)thisBodyPartAllowed] = defaultBodyPart;
+            if(skeleton.SkeletonNodes[i].gameObject == this.gameObject)
+            {
+                slotNumber = i;
+                Debug.Log("Woohoo");
+            }
+
         }
+
+        //Create a holder image
+        thisDefaultHolder = Instantiate(defaultBodyPartHolder, this.GetComponent<RectTransform>());
+        skeleton.NodeBodyPart[slotNumber] = thisDefaultHolder;
+        isDefaultOn = true;
+
+        ////If no sprite
+        //if (!this.GetComponentInChildren<BodyPart>())
+        //{
+        //    //Create a holder image
+        //    thisDefaultHolder = Instantiate(defaultBodyPartHolder, this.GetComponent<RectTransform>());
+        //    slotNumber = skeleton.NodeBodyPart.Count;
+        //    if(thisBodyPartAllowed == Manager.IndividualBodyPart.HEAD)
+        //    {
+        //        Debug.Log("Head");
+        //    }
+        //    skeleton.NodeBodyPart.Add(thisDefaultHolder);
+        //    //Set Current Node Sprite to default
+        //    //NodeCurrentSprite[(int)thisBodyPartAllowed] = thisDefaultHolder;
+        //    isDefaultOn = true;
+               
+        //}
     }
 
     // Update is called once per frame
@@ -40,11 +74,12 @@ public class BodyPartSlot : SkeletonScript, IDropHandler
             //If the body part is the same as the bodypart allowed
             if(eventData.pointerDrag.GetComponent<BodyPart>().thisBodyPart == thisBodyPartAllowed)
             {
-                
+                Debug.Log("Dropped on correct slot");
 
                 eventData.pointerDrag.GetComponent<BodyPart>().AttachToSkeleton(this);
                 //Set this node's sprite
-                NodeCurrentSprite[(int)thisBodyPartAllowed] = eventData.pointerDrag.gameObject;
+                //NodeCurrentSprite[(int)thisBodyPartAllowed] = eventData.pointerDrag.gameObject;
+                skeleton.NodeBodyPart[slotNumber] = eventData.pointerDrag.gameObject;
             }
             //else if(thisBodyPartAllowed == Manager.IndividualBodyPart.TROUSERS && eventData.pointerDrag.GetComponent<BodyPart>().thisBodyPart == Manager.IndividualBodyPart.LEGS)
             //{
@@ -61,4 +96,12 @@ public class BodyPartSlot : SkeletonScript, IDropHandler
 
 
     }
+
+    public void SetDefaultImage(bool turnOn)
+    {
+        thisDefaultHolder.SetActive(turnOn);
+        isDefaultOn = turnOn;
+    }
+
+   
 }

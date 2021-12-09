@@ -5,15 +5,22 @@ using UnityEngine;
 public static class Manager
 {
     public static Color currentColor;
+    //public static List<GameObject> NodeCurrentSpriteList = new List<GameObject>();
 
     public enum IndividualBodyPart
     {
         HEAD,
+        HAIR,
         SHIRT,
         ARMS,
         LEGS,
         TROUSERS,
         SHOES,
+
+        EYE,
+        NOSE,
+        MOUTH,
+        EAR,
 
     }
 

@@ -19,6 +19,7 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     [SerializeField]
     private GameObject bodyPartCollection;
     private ColourPicker colourPicker;
+    private SkeletonScript skeleton;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +29,7 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         rectTransform = GetComponent<RectTransform>();
         startPos = transform.position;
         colourPicker = canvas.GetComponentInChildren<ColourPicker>();
+        skeleton = canvas.GetComponentInChildren<SkeletonScript>();
         Debug.Log("yolo");
     }
 
@@ -59,6 +61,15 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        //If parent is a skeleton node
+        if (this.GetComponentInParent<BodyPartSlot>())
+        {
+            //Turn on default image
+            this.GetComponentInParent<BodyPartSlot>().SetDefaultImage(true);
+        }
+            
+
+        SetImageRaycastAvailable(false);
 
         canvasGroup.alpha = 0.6f;
         canvasGroup.blocksRaycasts = false;
@@ -69,7 +80,6 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     public void OnDrag(PointerEventData eventData)
     {
-        Debug.Log("OnDrag");
         //eventData.delta is the amount the mouse moved in the previous frame
         rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
@@ -87,7 +97,13 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
             //Set position back to start position
             transform.position = startPos;
+
+            //Check if no sprite on slot; if so, make default visible
+            //if(skeleton.NodeCurrentSprite[(int)thisBodyPart]. != skeleton.NodeCurrentSprite[(int)]
         }
+
+        SetImageRaycastAvailable(true);
+
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -105,14 +121,21 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     {
         droppedOnSlot = true;
 
-        //If not a child of bodyPartCollection
-        if (gameObject.transform.parent.gameObject != bodyPartCollection)
+        //If placeholder default image is there
+        if (slot.isDefaultOn)
         {
-            AttachToMenu(this);
+            //Turn off default image
+            slot.SetDefaultImage(false);
         }
 
+        ////If not a child of bodyPartCollection
+        //if (gameObject.transform.parent.gameObject != bodyPartCollection)
+        //{
+        //    AttachToMenu(this);
+        //}
+
         //If there is a bodypart in place already
-        if(slot.GetComponentInChildren<BodyPart>())
+        if (slot.GetComponentInChildren<BodyPart>())
         {
             //If bodypart is not already on skeleton
             if (slot.GetComponentInChildren<Transform>().gameObject != gameObject)
@@ -134,7 +157,38 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         part.GetComponent<RectTransform>().position = part.startPos;
     }
 
-
+    public void SetImageRaycastAvailable(bool trueFalse)
+    {
+        //For each skeleton node
+        for (int i = 0; i < skeleton.SkeletonNodes.Length; i++)
+        {
+            //If being turned off
+            if(trueFalse == false)
+            {
+                //If that node is not the same as current body part type
+                if (skeleton.SkeletonNodes[i].GetComponent<BodyPartSlot>().thisBodyPartAllowed != thisBodyPart)
+                {
+                    //Set 
+                    skeleton.NodeBodyPart[i].GetComponent<Image>().raycastTarget = false;
+                    skeleton.SkeletonNodes[i].GetComponent<Image>().raycastTarget = false;
+                }
+                else
+                {
+                    Debug.Log(skeleton.SkeletonNodes[i].gameObject);
+                    //Set node to be a raycast target
+                    skeleton.SkeletonNodes[i].GetComponent<Image>().raycastTarget = true;
+                    skeleton.NodeBodyPart[i].GetComponent<Image>().raycastTarget = false;
+                }
+                //skeleton.NodeBodyPart[i].GetComponent<Image>().raycastTarget = true;
+            }
+            //If nodes are being turned on
+            else
+            {
+                skeleton.SkeletonNodes[i].GetComponent<Image>().raycastTarget = true;
+                skeleton.NodeBodyPart[i].GetComponent<Image>().raycastTarget = true;
+            }
+        }
+    }
     //public void ResetPosition()
     //{
     //    rectTransform = startPos;
