@@ -18,6 +18,7 @@ public static class Manager
         SHOES,
 
         EYE,
+        EYEBROW,
         NOSE,
         MOUTH,
         EAR,
