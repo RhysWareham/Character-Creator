@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FacePart : BodyPart
 {
-    public Manager.IndividualFacePart thisFacePart;
+
 
     // Start is called before the first frame update
     void Start()

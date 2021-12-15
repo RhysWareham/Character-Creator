@@ -14,6 +14,7 @@ public class BodyPartSlot : MonoBehaviour, IDropHandler
     public bool isDefaultOn;
     public int slotNumber;
     public SkeletonScript skeleton;
+    public bool isRight = false;
 
     // Start is called before the first frame update
     void Start()

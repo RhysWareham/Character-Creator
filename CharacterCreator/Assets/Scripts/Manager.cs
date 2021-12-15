@@ -9,26 +9,20 @@ public static class Manager
 
     public enum IndividualBodyPart
     {
-        HEAD,
-        HAIR,
         SHIRT,
         ARMS,
         LEGS,
         TROUSERS,
         SHOES,
-
-        EYE,
-        EYEBROW,
+        EYES,
+        BROWS,
+        EARS,
         NOSE,
         MOUTH,
-        EAR,
-
+        HEAD,
+        HAIR
     }
 
-    public enum IndividualFacePart
-    {
-        EYES
-    }
 
     //Should i make a separate array for clothing?
 

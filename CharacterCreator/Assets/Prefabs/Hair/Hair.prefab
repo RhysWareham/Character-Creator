@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb3afdeea53b3bc44882f9b3ff4366b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thisBodyPart: 1
+  thisBodyPart: 11
   rectTransform: {fileID: 0}
   startPos: {x: 0, y: 0, z: 0}
   droppedOnSlot: 0

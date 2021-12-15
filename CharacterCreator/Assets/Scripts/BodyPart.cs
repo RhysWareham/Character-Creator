@@ -20,10 +20,19 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     private GameObject bodyPartCollection;
     private ColourPicker colourPicker;
     private SkeletonScript skeleton;
+    [SerializeField]
+    private Vector3 offsetPos;
+
+    private float startPositive;
+    [SerializeField]
+    private bool canFlip = false;
+    [SerializeField]
+    private bool isFlipped = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        startPositive = GetComponent<RectTransform>().localScale.x;
         canvas = FindObjectOfType<Canvas>();
         canvasGroup = GetComponent<CanvasGroup>();
         rectTransform = GetComponent<RectTransform>();
@@ -31,6 +40,7 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         colourPicker = canvas.GetComponentInChildren<ColourPicker>();
         skeleton = canvas.GetComponentInChildren<SkeletonScript>();
         Debug.Log("yolo");
+        bodyPartCollection = this.GetComponentInParent<BodyCollection>().gameObject;
     }
 
     // Update is called once per frame
@@ -66,8 +76,40 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         {
             //Turn on default image
             this.GetComponentInParent<BodyPartSlot>().SetDefaultImage(true);
+
+            //If pointing right instead of left
+            if (GetComponent<RectTransform>().localScale.x != startPositive)
+            {
+                //flip sprite
+                //GetComponent<RectTransform>().localScale = new Vector3(startPositive, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
+
+
+            }
+            if(isFlipped)
+            {
+                Vector3 localScale = new Vector3(-startPositive, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
+                //transform.localScale = localScale*-1;
+                //isFlipped = false;
+            }
+            //if (startPositive != rectTransform.localScale.x)
+            //{
+            //    GetComponent<RectTransform>().localScale = new Vector3(-GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
+
+            //}
         }
+        //GetComponent<RectTransform>().localScale = new Vector3(startPositive, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
+
+        //if(startPositive < 0 && GetComponent<RectTransform>().localScale.x > 0)
+        //{
             
+        //    GetComponent<RectTransform>().localScale = new Vector3(-GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
+            
+
+        //}
+        //if(startPositive < 0 && GetComponent<RectTransform>().localScale >)
+        //else
+
+
 
         SetImageRaycastAvailable(false);
 
@@ -98,8 +140,19 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             //Set position back to start position
             transform.position = startPos;
 
+            
+
             //Check if no sprite on slot; if so, make default visible
             //if(skeleton.NodeCurrentSprite[(int)thisBodyPart]. != skeleton.NodeCurrentSprite[(int)]
+        }
+        else
+        {
+            //If on skeleton
+            if (transform.parent.gameObject != bodyPartCollection)
+            {
+                //Set this body part to be the edittable image 
+                colourPicker.SetEdittingImage(GetComponent<Image>());
+            }
         }
 
         SetImageRaycastAvailable(true);
@@ -145,16 +198,124 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             }
 
         }
+        //Vector3 positionChange = GetComponent<RectTransform>().localPosition;
+
+        //If sprite is on right of skeleton, but not flipped, flip it
+        //If slot is right, and scale is -1
+        //if(slot.isRight && GetComponent<RectTransform>().localScale.x < 0)
+        //{
+        //    //If does start positive and not flipped
+        //    if(startPositive > 0 && GetComponent<RectTransform>().localScale.x > 0)
+        //    {
+        //        //flip
+        //        GetComponent<RectTransform>().localScale = new Vector3(slot.transform.localScale.x * GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
+
+        //    }
+
+        //    //if (this.GetComponent<RectTransform>().position.x > skeleton.transform.position.x
+        //    //&& GetComponent<RectTransform>().localScale.x > 0)
+        //    //{
+        //    //}
+        //}
+        //else if(!slot.isRight && GetComponent<RectTransform>().localScale.x > 0)
+        //{
+        //    if()
+        //}
+
+        //if (slot.isRight)
+        //{
+        //    GetComponent<RectTransform>().localScale = new Vector3(-GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
+        //}
+        //Set scale to be correct
+        //If slot is right, and scale x is equal to startPositive
+        //GetComponent<RectTransform>().localScale = new Vector3(startPositive, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
+        //Only need to flip on drop if slot is Right
+        if (canFlip && slot.isRight)
+        {
+            if (!isFlipped)
+            {
+                GetComponent<RectTransform>().localScale = new Vector3(-GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
+                isFlipped = true;
+            }
+        }
+        else if(canFlip && !slot.isRight)
+        {
+            if(isFlipped)
+            {
+                GetComponent<RectTransform>().localScale = new Vector3(-GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
+                isFlipped = false;
+            }
+        }
+
+        //    //If started facing right
+        //    if (startPositive > 0)
+        //    {
+        //        //But doesn't need to flip right now
+        //        if (GetComponent<RectTransform>().localScale.x < startPositive)
+        //        {
+
+        //        }
+        //        else
+        //        {
+        //            GetComponent<RectTransform>().localScale = new Vector3(-GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
+        //        }
+        //    }
+        //    //If didn't start the right way
+        //    else
+        //    {
+        //        //But doesn't need to flip right now
+        //        if (GetComponent<RectTransform>().localScale.x < startPositive)
+        //        {
+        //            GetComponent<RectTransform>().localScale = new Vector3(-GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
+
+        //        }
+        //    }
+        //}
+        //else if(canFlip && !slot.isRight)
+        //{
+        //    //If started facing left
+        //    if (startPositive > 0)
+        //    {
+        //        //But doesn't need to flip right now
+        //        if (GetComponent<RectTransform>().localScale.x == startPositive)
+        //        {
+
+        //        }
+        //        else
+        //        {
+        //            GetComponent<RectTransform>().localScale = new Vector3(-GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
+        //        }
+        //    }
+        //    //If didn't start the right way
+        //    else
+        //    {
+        //        //But doesn't need to flip right now
+        //        if (GetComponent<RectTransform>().localScale.x > startPositive)
+        //        {
+        //            GetComponent<RectTransform>().localScale = new Vector3(-GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
+
+        //        }
+        //    }
+        //}
+
 
         //Snap sprite to slot centre position
-        GetComponent<RectTransform>().position = slot.GetComponent<RectTransform>().position;
         gameObject.transform.SetParent(slot.gameObject.transform);
+        GetComponent<RectTransform>().localPosition = offsetPos;
     }
 
     public void AttachToMenu(BodyPart part)
     {
+        if(part.startPositive != part.rectTransform.localScale.x)
+        {
+            //part.GetComponent<RectTransform>().localScale = new Vector3(-part.GetComponent<RectTransform>().localScale.x, part.GetComponent<RectTransform>().localScale.y, part.GetComponent<RectTransform>().localScale.z);
+
+        }
         part.gameObject.transform.SetParent(part.bodyPartCollection.transform);
         part.GetComponent<RectTransform>().position = part.startPos;
+        part.GetComponent<RectTransform>().localScale = new Vector3(part.startPositive, part.GetComponent<RectTransform>().localScale.y, part.GetComponent<RectTransform>().localScale.z);
+        part.isFlipped = false;
+        part.GetComponent<Image>().raycastTarget = true;
     }
 
     public void SetImageRaycastAvailable(bool trueFalse)
