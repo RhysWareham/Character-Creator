@@ -10,6 +10,8 @@ public class SkeletonScript : MonoBehaviour
     public GameObject[] SkeletonNodes;
     public GameObject[] NodeBodyPart;
 
+    public GameObject frontHairPos;
+
     private void Awake()
     {
         NodeBodyPart = new GameObject[SkeletonNodes.Length];

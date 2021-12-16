@@ -29,6 +29,11 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     [SerializeField]
     private bool isFlipped = false;
 
+    public GameObject replacement;
+    private bool hasDuplicate = false;
+    public bool isDuplicate = false;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,6 +46,8 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         skeleton = canvas.GetComponentInChildren<SkeletonScript>();
         Debug.Log("yolo");
         bodyPartCollection = this.GetComponentInParent<BodyCollection>().gameObject;
+
+
     }
 
     // Update is called once per frame
@@ -91,11 +98,33 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
                 //transform.localScale = localScale*-1;
                 //isFlipped = false;
             }
+
+            if (GetComponent<BackHair>())
+            {
+                GetComponent<BackHair>().frontHair.transform.SetParent(this.transform);
+                //GetComponentInChildren<Transform>().gameObject.transform.SetParent(skeleton.frontHairPos.transform);
+            }
             //if (startPositive != rectTransform.localScale.x)
             //{
             //    GetComponent<RectTransform>().localScale = new Vector3(-GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
 
             //}
+        }
+
+        //Create a new body part to replace current one if still part of menu
+        //Idk why it is starting with scale x of 0
+        if(this.GetComponentInParent<BodyCollection>())
+        {
+            GameObject newOne = this.gameObject;
+
+            replacement = Instantiate(newOne, bodyPartCollection.transform);
+            replacement.GetComponent<BodyPart>().isDuplicate = true;
+            replacement.GetComponent<BodyPart>().startPositive = startPositive;
+            replacement.GetComponent<BodyPart>().canFlip = canFlip;
+            //replacement.GetComponent<RectTransform>().transform.localScale = new Vector2(1, 5);
+            replacement.GetComponent<BodyPart>().startPos = startPos;
+            AttachToMenu(replacement.GetComponent<BodyPart>());
+            hasDuplicate = true;
         }
         //GetComponent<RectTransform>().localScale = new Vector3(startPositive, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
 
@@ -136,7 +165,13 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         if(droppedOnSlot == false)
         {
             AttachToMenu(this);
-
+            if(hasDuplicate)
+            {
+                if(replacement.GetComponentInParent<BodyCollection>())
+                {
+                    Destroy(replacement);
+                }
+            }
             //Set position back to start position
             transform.position = startPos;
 
@@ -187,6 +222,7 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         //    AttachToMenu(this);
         //}
 
+
         //If there is a bodypart in place already
         if (slot.GetComponentInChildren<BodyPart>())
         {
@@ -194,41 +230,103 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             if (slot.GetComponentInChildren<Transform>().gameObject != gameObject)
             {
                 //Set other sprite back to menu position
-                slot.GetComponentInChildren<BodyPart>().AttachToMenu(slot.GetComponentInChildren<BodyPart>());
+                //slot.GetComponentInChildren<BodyPart>().AttachToMenu(slot.GetComponentInChildren<BodyPart>());
             }
 
+            //If slot image is same as new image and is not default
+            if(slot.GetComponentInChildren<BodyPart>().GetComponent<Image>().sprite == GetComponent<Image>().sprite && !slot.GetComponentInChildren<Default>())
+            {
+                //If there can be 2 stored on the character
+                if(1==1)
+                {
+                    //If slot sprite has a duplicate
+                    if(slot.GetComponentInChildren<BodyPart>().hasDuplicate)
+                    {
+                        
+                        //And duplicate is not on skeleton
+                        if(slot.GetComponentInChildren<BodyPart>().replacement.GetComponentInParent<BodyCollection>())
+                        {
+                            //And if duplicate is not the new dragged sprite
+                            if(slot.GetComponentInChildren<BodyPart>().replacement != gameObject)
+                            {
+                                //Destroy the replacement
+                                //Destroy(slot.GetComponentInChildren<BodyPart>().replacement);
+                                //slot.GetComponentInChildren<BodyPart>().hasDuplicate = false;
+                                //And then send the slot image to menu.
+                                //replacement = slot.GetComponentInChildren<BodyPart>().gameObject;
+                                slot.GetComponentInChildren<BodyPart>().AttachToMenu(slot.GetComponentInChildren<BodyPart>()); ///////////////latest line
+                                
+                                //Make sure that when it gets attached to menu, it becomes slot's duplicate
+                            
+                            }
+                            //If the duplicate is the new sprite that is being dragged on
+                            else
+                            {
+                                //And delete current dragging sprite's duplicate
+                                if(hasDuplicate)
+                                {
+                                    Destroy(replacement);
+                                }
+                                
+                                replacement = slot.GetComponentInChildren<BodyPart>().gameObject;
+                                //Send slot image back to menu?
+                                slot.GetComponentInChildren<BodyPart>().AttachToMenu(slot.GetComponentInChildren<BodyPart>());
+                                
+
+                                //Attach dragging sprite to skeleton
+                                //Gets done in standard part of function
+                            }
+                        }
+                        //If duplicate is on skeleton
+                        else
+                        {
+                            if(hasDuplicate)
+                            {
+                                if(replacement.GetComponentInParent<BodyCollection>())
+                                {
+                                    Destroy(replacement);
+                                }
+                                replacement = slot.GetComponentInChildren<BodyPart>().gameObject;
+                            }
+                            //Send slot image back to menu?
+                            replacement = slot.GetComponentInChildren<BodyPart>().gameObject;
+                            slot.GetComponentInChildren<BodyPart>().AttachToMenu(slot.GetComponentInChildren<BodyPart>());
+                        }
+                    }
+                }
+                else
+                {
+                    //Check if duplicate lives
+                    //If duplicate of slot image is in menu, delete the duplicate and return the slot image to menu.
+                }
+
+
+            }
+            else
+            {
+                //if(GetComponentInParent<BodyPartSlot>())
+                //{
+
+                //}
+                slot.GetComponentInChildren<BodyPart>().AttachToMenu(slot.GetComponentInChildren<BodyPart>());
+            }
         }
-        //Vector3 positionChange = GetComponent<RectTransform>().localPosition;
+        if (thisBodyPart == Manager.IndividualBodyPart.HAIR)
+        {
+            if (!slot.GetComponentInChildren<BodyPart>())
+            {
+                if (skeleton.frontHairPos.GetComponentInChildren<BodyPart>())
+                {
+                    //If bodypart is not already on skeleton
+                    if (slot.GetComponentInChildren<Transform>().gameObject != gameObject)
+                    {
+                        //Move front hair
+                        skeleton.frontHairPos.GetComponentInChildren<BodyPart>().AttachToMenu(skeleton.frontHairPos.GetComponentInChildren<BodyPart>());
+                    }
+                }
+            }
+        }
 
-        //If sprite is on right of skeleton, but not flipped, flip it
-        //If slot is right, and scale is -1
-        //if(slot.isRight && GetComponent<RectTransform>().localScale.x < 0)
-        //{
-        //    //If does start positive and not flipped
-        //    if(startPositive > 0 && GetComponent<RectTransform>().localScale.x > 0)
-        //    {
-        //        //flip
-        //        GetComponent<RectTransform>().localScale = new Vector3(slot.transform.localScale.x * GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
-
-        //    }
-
-        //    //if (this.GetComponent<RectTransform>().position.x > skeleton.transform.position.x
-        //    //&& GetComponent<RectTransform>().localScale.x > 0)
-        //    //{
-        //    //}
-        //}
-        //else if(!slot.isRight && GetComponent<RectTransform>().localScale.x > 0)
-        //{
-        //    if()
-        //}
-
-        //if (slot.isRight)
-        //{
-        //    GetComponent<RectTransform>().localScale = new Vector3(-GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
-        //}
-        //Set scale to be correct
-        //If slot is right, and scale x is equal to startPositive
-        //GetComponent<RectTransform>().localScale = new Vector3(startPositive, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
         //Only need to flip on drop if slot is Right
         if (canFlip && slot.isRight)
         {
@@ -238,84 +336,72 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
                 isFlipped = true;
             }
         }
-        else if(canFlip && !slot.isRight)
+        else if (canFlip && !slot.isRight)
         {
-            if(isFlipped)
+            if (isFlipped)
             {
                 GetComponent<RectTransform>().localScale = new Vector3(-GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
                 isFlipped = false;
             }
         }
+        
 
-        //    //If started facing right
-        //    if (startPositive > 0)
-        //    {
-        //        //But doesn't need to flip right now
-        //        if (GetComponent<RectTransform>().localScale.x < startPositive)
-        //        {
+        //Vector3 positionChange = GetComponent<RectTransform>().localPosition;
 
-        //        }
-        //        else
-        //        {
-        //            GetComponent<RectTransform>().localScale = new Vector3(-GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
-        //        }
-        //    }
-        //    //If didn't start the right way
-        //    else
-        //    {
-        //        //But doesn't need to flip right now
-        //        if (GetComponent<RectTransform>().localScale.x < startPositive)
-        //        {
-        //            GetComponent<RectTransform>().localScale = new Vector3(-GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
-
-        //        }
-        //    }
-        //}
-        //else if(canFlip && !slot.isRight)
-        //{
-        //    //If started facing left
-        //    if (startPositive > 0)
-        //    {
-        //        //But doesn't need to flip right now
-        //        if (GetComponent<RectTransform>().localScale.x == startPositive)
-        //        {
-
-        //        }
-        //        else
-        //        {
-        //            GetComponent<RectTransform>().localScale = new Vector3(-GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
-        //        }
-        //    }
-        //    //If didn't start the right way
-        //    else
-        //    {
-        //        //But doesn't need to flip right now
-        //        if (GetComponent<RectTransform>().localScale.x > startPositive)
-        //        {
-        //            GetComponent<RectTransform>().localScale = new Vector3(-GetComponent<RectTransform>().localScale.x, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
-
-        //        }
-        //    }
-        //}
-
+                //Set scale to be correct
+        //If slot is right, and scale x is equal to startPositive
+        //GetComponent<RectTransform>().localScale = new Vector3(startPositive, GetComponent<RectTransform>().localScale.y, GetComponent<RectTransform>().localScale.z);
+        
 
         //Snap sprite to slot centre position
         gameObject.transform.SetParent(slot.gameObject.transform);
         GetComponent<RectTransform>().localPosition = offsetPos;
+
+        if(thisBodyPart == Manager.IndividualBodyPart.HAIR)
+        {
+            if(GetComponent<BackHair>())
+            {
+                GetComponent<BackHair>().frontHair.transform.SetParent(skeleton.frontHairPos.transform);
+            
+            }
+            else
+            {
+                gameObject.transform.SetParent(skeleton.frontHairPos.transform);
+            }
+
+        }
+        
     }
 
     public void AttachToMenu(BodyPart part)
     {
-        if(part.startPositive != part.rectTransform.localScale.x)
+        part.GetComponent<Image>().raycastTarget = true;
+        
+        if(part.thisBodyPart == Manager.IndividualBodyPart.HAIR)
         {
-            //part.GetComponent<RectTransform>().localScale = new Vector3(-part.GetComponent<RectTransform>().localScale.x, part.GetComponent<RectTransform>().localScale.y, part.GetComponent<RectTransform>().localScale.z);
-
+            if (part.GetComponent<BackHair>())
+            {
+                part.GetComponent<BackHair>().frontHair.transform.SetParent(part.transform);
+                //GetComponentInChildren<Transform>().gameObject.transform.SetParent(skeleton.frontHairPos.transform);
+            }
         }
+
         part.gameObject.transform.SetParent(part.bodyPartCollection.transform);
         part.GetComponent<RectTransform>().position = part.startPos;
         part.GetComponent<RectTransform>().localScale = new Vector3(part.startPositive, part.GetComponent<RectTransform>().localScale.y, part.GetComponent<RectTransform>().localScale.z);
         part.isFlipped = false;
-        part.GetComponent<Image>().raycastTarget = true;
+
+        //If 
+        //if(part.hasDuplicate)
+        //{
+        //    //If original's duplicate is in menu
+        //    if(part.replacement.GetComponentInParent<BodyCollection>())
+        //    {
+        //        //Destroy the menu replacement
+        //        Destroy(part.replacement);
+        //        part.hasDuplicate = false;
+        //    }
+        //}
     }
 
     public void SetImageRaycastAvailable(bool trueFalse)
@@ -323,30 +409,35 @@ public class BodyPart : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         //For each skeleton node
         for (int i = 0; i < skeleton.SkeletonNodes.Length; i++)
         {
-            //If being turned off
-            if(trueFalse == false)
+            if (skeleton.SkeletonNodes[i] != null)
             {
-                //If that node is not the same as current body part type
-                if (skeleton.SkeletonNodes[i].GetComponent<BodyPartSlot>().thisBodyPartAllowed != thisBodyPart)
+
+
+                //If being turned off
+                if (trueFalse == false)
                 {
-                    //Set 
-                    skeleton.NodeBodyPart[i].GetComponent<Image>().raycastTarget = false;
-                    skeleton.SkeletonNodes[i].GetComponent<Image>().raycastTarget = false;
+                    //If that node is not the same as current body part type
+                    if (skeleton.SkeletonNodes[i].GetComponent<BodyPartSlot>().thisBodyPartAllowed != thisBodyPart)
+                    {
+                        //Set 
+                        skeleton.NodeBodyPart[i].GetComponent<Image>().raycastTarget = false;
+                        skeleton.SkeletonNodes[i].GetComponent<Image>().raycastTarget = false;
+                    }
+                    else
+                    {
+                        Debug.Log(skeleton.SkeletonNodes[i].gameObject);
+                        //Set node to be a raycast target
+                        skeleton.SkeletonNodes[i].GetComponent<Image>().raycastTarget = true;
+                        skeleton.NodeBodyPart[i].GetComponent<Image>().raycastTarget = false;
+                    }
+                    //skeleton.NodeBodyPart[i].GetComponent<Image>().raycastTarget = true;
                 }
+                //If nodes are being turned on
                 else
                 {
-                    Debug.Log(skeleton.SkeletonNodes[i].gameObject);
-                    //Set node to be a raycast target
                     skeleton.SkeletonNodes[i].GetComponent<Image>().raycastTarget = true;
-                    skeleton.NodeBodyPart[i].GetComponent<Image>().raycastTarget = false;
+                    skeleton.NodeBodyPart[i].GetComponent<Image>().raycastTarget = true;
                 }
-                //skeleton.NodeBodyPart[i].GetComponent<Image>().raycastTarget = true;
-            }
-            //If nodes are being turned on
-            else
-            {
-                skeleton.SkeletonNodes[i].GetComponent<Image>().raycastTarget = true;
-                skeleton.NodeBodyPart[i].GetComponent<Image>().raycastTarget = true;
             }
         }
     }

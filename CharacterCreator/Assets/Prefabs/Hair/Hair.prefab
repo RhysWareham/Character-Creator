@@ -67,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 80a1a5934a3c5cd459199fa3ac2d5e54, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 77f4258c0f29ac445bbca812f2e60aa6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -107,3 +107,6 @@ MonoBehaviour:
   droppedOnSlot: 0
   isFacePart: 0
   bodyPartCollection: {fileID: 0}
+  offsetPos: {x: 0, y: 0, z: 0}
+  canFlip: 0
+  isFlipped: 0

@@ -30,7 +30,7 @@ RectTransform:
   m_GameObject: {fileID: 1823169913632993251}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.05, y: 0.05, z: 0.16878904}
+  m_LocalScale: {x: -0.05, y: 0.05, z: 0.16878904}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -98,6 +98,9 @@ MonoBehaviour:
   bodyPartCollection: {fileID: 0}
   offsetPos: {x: 0, y: 0, z: 0}
   canFlip: 1
+  isFlipped: 0
+  replacement: {fileID: 0}
+  isDuplicate: 0
 --- !u!114 &8728065709118879675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,6 +121,9 @@ MonoBehaviour:
   bodyPartCollection: {fileID: 0}
   offsetPos: {x: 0, y: 0, z: 0}
   canFlip: 0
+  isFlipped: 0
+  replacement: {fileID: 0}
+  isDuplicate: 0
 --- !u!225 &-1381884056821537865
 CanvasGroup:
   m_ObjectHideFlags: 0

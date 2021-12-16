@@ -71,6 +71,15 @@ public class ColourPicker : MonoBehaviour
         }
         edittingImage.color = newColour;
         edittingImage.color = new Color(newColour.r, newColour.g, newColour.b, 100f);
+
+        if(edittingImage.GetComponent<BodyPart>().thisBodyPart == Manager.IndividualBodyPart.HAIR)
+        {
+            if(edittingImage.GetComponent<BackHair>())
+            {
+                edittingImage.GetComponent<BackHair>().frontHair.GetComponent<Image>().color = new Color(newColour.r, newColour.g, newColour.b, 100f);
+            }
+        }
+
         //image.color.a = 100f;
         Manager.currentColor = newColour;
 
